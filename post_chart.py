@@ -46,6 +46,12 @@ FILE_TITLE = os.environ.get(
     "File:Opinion polling graph for the next United Kingdom general election (post-2024).svg",
 )
 
+# The Wikipedia article the chart appears in (linked from each post).
+ARTICLE_URL = os.environ.get(
+    "ARTICLE_URL",
+    "https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_United_Kingdom_general_election",
+)
+
 # Width, in pixels, of the PNG we ask Wikimedia to render for us.
 THUMB_WIDTH = int(os.environ.get("THUMB_WIDTH", "2000"))
 
@@ -209,10 +215,12 @@ def write_state(sha1: str) -> None:
 
 
 def build_post_text(info: dict) -> client_utils.TextBuilder:
-    """Short post body with a clickable link to the source + licence."""
+    """Short post body with clickable links to the article, source + licence."""
     today = date.today().strftime("%-d %B %Y")
     tb = client_utils.TextBuilder()
-    tb.text(f"UK general election voting-intention poll tracker — updated {today}. Details: https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_United_Kingdom_general_election\n\n")
+    tb.text(f"UK general election voting-intention poll tracker — updated {today}. ")
+    tb.link("Details at Wikipedia", ARTICLE_URL)
+    tb.text("\n\n")
     tb.text(f"Chart ({info['licence_short']}) from ")
     tb.link("Wikimedia Commons", info["descriptionurl"])
     tb.text(". Full credit in the image description (alt text).")
