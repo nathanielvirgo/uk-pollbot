@@ -1,0 +1,59 @@
+name: Post UK poll chart to Bluesky
+
+on:
+  # Check for a new version of the chart on a schedule.
+  # Runs at 23 minutes past every hour (UTC). GitHub may delay scheduled runs
+  # on busy periods; that's fine for a chart that updates a few times a week.
+  schedule:
+    - cron: "23 * * * *"
+  # Lets you run it by hand from the Actions tab. Tick "force" for the very
+  # first post, or to re-post the current chart.
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Post even if the chart hasn't changed"
+        type: boolean
+        default: false
+
+# Needed so the workflow can commit the little state file back to the repo.
+permissions:
+  contents: write
+
+# Don't let two runs overlap and clobber each other's state.
+concurrency:
+  group: post-chart
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check for an update and post
+        env:
+          BSKY_HANDLE: ${{ secrets.BSKY_HANDLE }}
+          BSKY_PASSWORD: ${{ secrets.BSKY_PASSWORD }}
+          FORCE_POST: ${{ (github.event_name == 'workflow_dispatch' && inputs.force) && '1' || '' }}
+        run: python post_chart.py
+
+      - name: Save the last-posted version
+        run: |
+          if [[ -n "$(git status --porcelain state/last_sha1.txt)" ]]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state/last_sha1.txt
+            git commit -m "Update last-posted chart version [skip ci]"
+            git push
+          else
+            echo "No state change to commit."
+          fi
