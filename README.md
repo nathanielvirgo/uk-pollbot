@@ -1,5 +1,9 @@
 # UK poll chart → Bluesky bot
 
+This is a zero-effort vibe-coded bot that posts Wikipedia's UK poll chart to Bluesky whenever it's updated.
+
+# Details (AI written)
+
 A tiny bot that watches the Wikipedia/Wikimedia Commons UK opinion-polling chart
 and posts it to Bluesky whenever a new poll changes it. It runs for free on
 GitHub Actions — there is no server to maintain.
