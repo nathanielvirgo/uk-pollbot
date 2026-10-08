@@ -212,7 +212,7 @@ def build_post_text(info: dict) -> client_utils.TextBuilder:
     """Short post body with a clickable link to the source + licence."""
     today = date.today().strftime("%-d %B %Y")
     tb = client_utils.TextBuilder()
-    tb.text(f"📊 UK general election voting-intention poll tracker — updated {today}.\n\n")
+    tb.text(f"UK general election voting-intention poll tracker — updated {today}. Details: https://en.wikipedia.org/wiki/Opinion_polling_for_the_next_United_Kingdom_general_election\n\n")
     tb.text(f"Chart ({info['licence_short']}) from ")
     tb.link("Wikimedia Commons", info["descriptionurl"])
     tb.text(". Full credit in the image description (alt text).")
