@@ -223,7 +223,7 @@ def build_post_text(info: dict) -> client_utils.TextBuilder:
     tb.text(".\n\n")
     tb.text(f"Chart ({info['licence_short']}) from ")
     tb.link("Wikimedia Commons", info["descriptionurl"])
-    tb.text(". Full credit in the image description (alt text).")
+    tb.text(". Full credit in the alt text.")
     return tb
 
 
